@@ -121,6 +121,23 @@ Anti-hallucination rules work best at ~85-90% compliance in CLAUDE.md. For the r
 
 This ensures Claude can't commit code that fails tests, regardless of whether it followed the "run tests" rule.
 
+## The Devil's Advocate Verifier
+
+From the leaked source code (via 阿亮學AI): Anthropic includes a dedicated verification role whose sole instruction is:
+
+> "Your task is not to confirm things work — it's to find problems."
+
+With pre-built rebuttals for lazy verification:
+- AI says "it looks fine" → "Looking fine ≠ verified. Actually run it."
+- AI says "someone already checked" → "Someone else is also AI. Verify independently."
+
+**Application**:
+
+```markdown
+- When verifying a fix, do not say "it looks correct." Run the actual
+  test or command. "Looks right" is not verification.
+```
+
 ## What Doesn't Work
 
 - `"Don't hallucinate"` — too vague, no actionable behavior

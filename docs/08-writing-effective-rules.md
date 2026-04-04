@@ -128,19 +128,61 @@ paths:
 
 These rules **only load when Claude reads files matching the glob pattern**, keeping the base context clean.
 
-## Negative vs Positive Instructions
+## Prohibitions vs Instructions
+
+A counterintuitive finding from the leaked source code: Anthropic's engineers use **NEVER**, **DO NOT**, and **CRITICAL** far more often than positive guidance. "阿亮學AI" counted these as the most common keywords across the prompt system.
+
+The logic: prohibitions leave room for Claude to choose its own approach, while instructions constrain it to one path. "Do not use `console.log`" lets Claude pick the right logger; "Use `src/lib/logger.ts`" forces one specific choice.
+
+**In practice, both work. The best rules combine both:**
+
+```markdown
+- Use the logger from `src/lib/logger.ts`. Do not use `console.log` in production code.
+```
 
 Community finding from [Dev.to: "5 Patterns That Make Claude Code Actually Follow Your Rules"](https://dev.to/docat0209/5-patterns-that-make-claude-code-actually-follow-your-rules-44dh):
 
-| Negative (Weaker) | Positive (Stronger) |
-|-------------------|---------------------|
-| "Don't use console.log" | "Use the logger from src/lib/logger.ts" |
-| "Don't write long functions" | "Extract functions over 40 lines into helpers" |
-| "Don't commit untested code" | "Run `pnpm test` before committing" |
+| Prohibition Only | Instruction Only | Combined (Strongest) |
+|-----------------|------------------|---------------------|
+| "Don't use console.log" | "Use logger from src/lib/logger.ts" | Both together |
+| "Don't write long functions" | "Extract functions over 40 lines" | Both together |
+| "Don't commit untested code" | "Run `pnpm test` before committing" | Both together |
 
-Positive instructions tell Claude **what to do**. Negative instructions leave Claude to figure out the alternative.
+## The Devil's Advocate Pattern
 
-**Best**: Combine both: "Use the logger from `src/lib/logger.ts`. Do not use `console.log` in production code."
+One of the most clever patterns found in the source code: a dedicated **verification role** with a single directive:
+
+> "Your task is not to confirm things work — it's to find problems."
+
+Anthropic pre-wrote rebuttals for Claude's common "lazy excuses":
+
+| Claude Says | Rebuttal |
+|-------------|----------|
+| "It looks fine" | "Looking fine ≠ verified. Actually run it." |
+| "Someone else already checked" | "Someone else is also AI. You must verify independently." |
+| "It would take too long" | "Time is not your concern." |
+
+**Application for CLAUDE.md**: You can encode this pattern:
+
+```markdown
+- When verifying a fix, do not say "it looks correct." Run the actual
+  test or command to confirm. "Looks right" is not verification.
+- Do not assume another tool or previous step already validated something.
+  Verify independently.
+```
+
+## Accurate Reporting: No Defensive Disclaimers
+
+From the source code — a precise instruction about honesty in both directions:
+
+> "If something didn't work, say it didn't work and include specifics. If a step wasn't performed, say so — don't imply it was done. But equally, if something genuinely worked, don't add unnecessary caveats suggesting it might not have. The goal is **accurate** reporting, not **defensive** reporting."
+
+**Application**: If Claude keeps adding "but there might be other issues" or "this should work but I'm not 100% sure" when it actually verified the fix, add:
+
+```markdown
+- Report results accurately. If it works, say it works. If it doesn't,
+  say what failed. Do not add unnecessary caveats to verified results.
+```
 
 ## HTML Comments Save Tokens
 
@@ -157,6 +199,7 @@ The comment is free — it costs zero tokens. Use comments for human-only notes,
 
 - Anthropic Official Best Practices — code.claude.com/docs/en/best-practices
 - Wisely Chen, "拆解 Claude Code 的 System Prompt 源碼" — distributed repetition in prompts.ts
+- 阿亮學AI, "從 Claude Code 洩漏原始碼找到的 14 個 Prompt 秘訣" — devil's advocate, prohibitions, accurate reporting
 - Anthropic ANT internal prompt — quantified constraints
 - Google Research, "Prompt Repetition Improves Non-Reasoning LLMs" (Dec 2025)
 - Jose Parreó García, "How Claude Code Rules Actually Work" (Substack)
