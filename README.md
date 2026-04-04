@@ -2,7 +2,7 @@
 
 A research-backed guide to writing CLAUDE.md rules that improve Claude Code's **coding behavior** — preventing hallucination, enforcing verification, controlling scope, and producing reliable code.
 
-Based on **31+ sources**: Anthropic official docs, `prompts.ts` source code analysis (914 lines), community experiments, academic research, and real-world battle testing.
+Based on **43+ sources**: Anthropic official docs, the March 2026 source map leak (512K lines of TypeScript), 12 deep-analysis articles of `prompts.ts` and the codebase internals, community experiments, academic research, and real-world battle testing.
 
 ## Who This Is For
 
@@ -56,7 +56,12 @@ This guide synthesizes findings from 31+ sources including:
 - [Boris Cherny (Claude Code Creator) Tips](https://x.com/bcherny/status/2007179832300581177)
 - [arxiv 2511.09268: Decoding Configuration of AI Coding Agents](https://arxiv.org/abs/2511.09268)
 - [5-Layer QA System from 68 Failures](https://github.com/anthropics/claude-code/issues/29795)
-- And 25+ community articles, HN threads, and blog posts (full list in each doc)
+- [Alex Kim: Fake tools, frustration regexes, undercover mode](https://alex000kim.com/posts/2026-03-31-claude-code-source-leak/)
+- [Piebald-AI/claude-code-system-prompts](https://github.com/Piebald-AI/claude-code-system-prompts) — 110+ prompt strings extracted
+- [Yanchuk Gist: Complete Architecture Deep Dive](https://gist.github.com/yanchuk/0c47dd351c2805236e44ec3935e9095d)
+- [awesome-claude-code-postleak-insights](https://github.com/nblintao/awesome-claude-code-postleak-insights) — curated meta-list
+- [lintsinghua/claude-code-book](https://github.com/lintsinghua/claude-code-book) — 420K-character architecture book
+- And 30+ community articles, HN threads, blog posts, and Juejin/Zhihu analyses (full list in each doc)
 
 ## License
 
