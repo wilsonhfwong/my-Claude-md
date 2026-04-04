@@ -1,48 +1,62 @@
-# CLAUDE.md Best Practices Guide
+# CLAUDE.md Best Practices: Making Claude Code Write Better Code
 
-A comprehensive guide to writing effective CLAUDE.md files for Claude Code, informed by official documentation, community experience, and insights from the Claude Code source code analysis (March 2026).
+A research-backed guide to writing CLAUDE.md rules that improve Claude Code's **coding behavior** — preventing hallucination, enforcing verification, controlling scope, and producing reliable code.
+
+Based on **31+ sources**: Anthropic official docs, `prompts.ts` source code analysis (914 lines), community experiments, academic research, and real-world battle testing.
 
 ## Who This Is For
 
-- Developers using Claude Code who want better results from their AI assistant
-- Teams standardizing their Claude Code configuration
-- Anyone curious about how Claude Code processes instructions internally
+- Developers who want Claude Code to **stop making things up** and say "I don't know" instead
+- Teams tired of Claude **over-engineering**, adding unrequested features, or ignoring instructions
+- Anyone who wants to understand **how Claude Code actually processes your rules** internally
 
 ## Start Here
 
-If you're new to CLAUDE.md, begin with the **[Quick Start Guide](docs/01-quick-start.md)** -- you'll have a working CLAUDE.md in 5 minutes.
+New to CLAUDE.md? Begin with the **[Quick Start](docs/01-quick-start.md)** — a working behavioral CLAUDE.md in 5 minutes.
+
+Already have a CLAUDE.md but Claude keeps misbehaving? Jump to **[What Actually Works](docs/06-what-works-and-what-doesnt.md)**.
 
 ## Table of Contents
 
-### Fundamentals
-1. [Quick Start](docs/01-quick-start.md) -- Your first CLAUDE.md in 5 minutes
-2. [Hierarchy and Precedence](docs/02-hierarchy-and-precedence.md) -- The multi-layer configuration system
-3. [How Claude Reads Instructions](docs/03-how-claude-reads-instructions.md) -- Internal processing model, instruction budgets, prompt caching
+### Understanding the Machine
+1. [Quick Start](docs/01-quick-start.md) — Your first behavioral CLAUDE.md in 5 minutes
+2. [How Claude Code Works Internally](docs/02-system-prompt-internals.md) — The 914-line prompt engine, cache boundary, token budgets
+3. [The Three Enforcement Tiers](docs/03-enforcement-tiers.md) — CLAUDE.md (~70%) vs settings.json (100%) vs Hooks (100%)
 
-### Writing Effective Rules
-4. [Writing Effective Rules](docs/04-writing-effective-rules.md) -- The Question Test, WHAT-WHY-HOW framework, sizing
-5. [CLAUDE.md vs Settings vs Hooks](docs/05-claude-md-vs-settings-vs-hooks.md) -- When to use which mechanism
-6. [What Works and What Doesn't](docs/06-what-works-and-what-doesnt.md) -- Empirical findings from the community
+### Behavioral Rules That Work
+4. [Anti-Hallucination Rules](docs/04-anti-hallucination.md) — Stop Claude from inventing APIs, faking results, and guessing
+5. [Scope Control](docs/05-scope-control.md) — Prevent over-engineering, unrequested features, and runaway refactors
+6. [Testing and Verification](docs/06-testing-and-verification.md) — The single highest-leverage behavior change
+7. [What Actually Works](docs/07-what-works-and-what-doesnt.md) — Community-tested rules with compliance rates
 
 ### Going Deeper
-7. [Advanced Techniques](docs/07-advanced-techniques.md) -- Multi-agent patterns, caching optimization, token budgets
-8. [Maintenance Lifecycle](docs/08-maintenance-lifecycle.md) -- Pruning cadence, team process, measuring effectiveness
+8. [Writing Rules That Stick](docs/08-writing-effective-rules.md) — Quantified constraints, distributed repetition, the Question Test
+9. [Maintenance and Self-Improvement](docs/09-maintenance-lifecycle.md) — The living document loop
 
 ### Practical Resources
-- [Examples](examples/) -- Minimal, standard, and enterprise CLAUDE.md files
-- [Templates](templates/) -- Copy-paste starters with placeholders
+- [Examples](examples/) — Minimal, standard, and enterprise CLAUDE.md files (behavioral focus)
+- [Templates](templates/) — Copy-paste starters with behavioral rules built in
 
 ## Key Takeaways (TL;DR)
 
-- **Keep it short**: 40-80 lines is ideal, under 200 is acceptable, over 500 is harmful
-- **Question Test**: For every rule, ask "Would Claude make a mistake without this?" -- if no, delete it
-- **Three compliance tiers**: CLAUDE.md (~70%), settings.json (100%), Hooks (100%)
-- **Instruction budget**: You have ~100-150 instruction slots -- every unnecessary rule dilutes the ones that matter
-- **Start small**: Begin with 5 rules, add one per week, prune monthly
+1. **Claude Code's system prompt is 4,200 tokens**. Your CLAUDE.md is injected as a user message *after* it, with lower priority. Keep rules tight — every line competes for attention.
+2. **Say "don't hallucinate" explicitly**. Without this, Claude invents function signatures, fabricates API methods, and guesses at library interfaces.
+3. **"Read before writing" is the #1 rule**. Most bugs come from Claude modifying code it hasn't read.
+4. **Quantified rules beat qualitative ones**. "≤40 lines per function" works; "keep functions short" doesn't.
+5. **Three enforcement tiers**: CLAUDE.md is advisory (~70-80%). Hooks are deterministic (100%). Use the right tier.
+6. **Start with 5 rules**. Add one per week when Claude makes a mistake. Prune monthly. This beats writing 50 rules upfront.
+7. **The self-improving loop**: Every time Claude makes a mistake → add a rule → it never happens again.
 
-## Contributing
+## Sources
 
-This guide is a living document. If you discover new techniques or find errors, contributions are welcome.
+This guide synthesizes findings from 31+ sources including:
+- [Anthropic Official Best Practices](https://code.claude.com/docs/en/best-practices)
+- [Anthropic: How Teams Use Claude Code (PDF)](https://www-cdn.anthropic.com/58284b19e702b49db9302d5b6f135ad8871e7658.pdf)
+- [prompts.ts Source Code Analysis](https://ai-coding.wiselychen.com/claude-code-system-prompt-source-code-analysis/) (Wisely Chen)
+- [Boris Cherny (Claude Code Creator) Tips](https://x.com/bcherny/status/2007179832300581177)
+- [arxiv 2511.09268: Decoding Configuration of AI Coding Agents](https://arxiv.org/abs/2511.09268)
+- [5-Layer QA System from 68 Failures](https://github.com/anthropics/claude-code/issues/29795)
+- And 25+ community articles, HN threads, and blog posts (full list in each doc)
 
 ## License
 

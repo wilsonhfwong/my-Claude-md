@@ -9,15 +9,25 @@
 - Lint: `[lint command]`
 - Dev: `[dev server command]`
 
-## Rules
-<!-- Start with 5 rules. Add one per week as problems surface. Prune monthly. -->
+## Behavioral Rules
+<!-- These 5 rules prevent the most common AI coding mistakes. -->
+<!-- Keep as-is or customize. Each addresses a real failure mode. -->
+
+- If unsure whether a function, API, or library method exists, search the codebase or docs first. Do not invent interfaces.
+- Before modifying any file, read it first. Understand existing code before making changes.
+- Do not add features, refactors, or "improvements" beyond what was asked.
+- Run tests after changes. Do not consider a task done until tests pass.
+- If critical information is missing, ask me instead of guessing.
+
+## Project-Specific Rules
+<!-- Start with 3-5 rules for YOUR most common corrections. -->
 <!-- Each rule should pass the Question Test: "Would Claude make a mistake without this?" -->
+<!-- Prefer concrete: "Throw AppError from src/errors.ts" not "handle errors properly" -->
 
 - Use `[package manager]`, not [alternatives]. Lockfile: [lockfile name].
 - [Your most common correction #1.]
 - [Your most common correction #2.]
 - [Your most common correction #3.]
-- [Your most common correction #4.]
 
 <!-- Optional: conditional blocks for task-specific rules -->
 <!--
@@ -30,3 +40,6 @@
 <!-- Optional: critical rules (use sparingly, 2-3 max) -->
 <!-- - **CRITICAL**: [Non-negotiable rule, e.g., never commit secrets.] -->
 <!-- - **IMPORTANT**: [High-priority rule, e.g., always use feature branches.] -->
+
+<!-- Grow this file from real mistakes. Add one rule per week. Prune monthly. -->
+<!-- Target: 40-80 lines. Max: 200 lines. Over 500 = compliance drops. -->

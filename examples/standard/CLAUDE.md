@@ -13,39 +13,49 @@ Monorepo managed with Turborepo.
 - Type check: `pnpm tsc --noEmit`
 - DB migrate: `pnpm --filter backend prisma migrate dev`
 
-## Project Structure
+## Architecture
 - `apps/frontend/` -- React SPA (Vite)
 - `apps/backend/` -- Express API server
 - `packages/shared/` -- Shared types and utilities
 - `packages/ui/` -- Shared React component library
 
-## Rules
+## Behavioral Rules
+
+### Honesty and Verification
+- If unsure whether a function, API, or library method exists, search the codebase or docs first. Do not invent interfaces.
+- Before modifying any file, read it first. Understand existing code before making changes.
+- If critical information is missing, ask me instead of guessing.
+
+### Scope Control
+- Do not add features, refactors, or "improvements" beyond what was asked.
+- Do not add new packages without listing them and asking first.
+- Keep diffs small. One goal per change.
+
+### Testing
+- Run `pnpm test` after changes. Do not consider a task done until tests pass.
+- When fixing a bug, write a failing test first, then fix it.
+- Do not modify existing test assertions unless I specifically ask.
+
+## Project-Specific Rules
 
 ### General
 - Use `pnpm`, not `npm` or `yarn`. Lockfile: pnpm-lock.yaml.
-- Import shared types from `@acme/shared`, never duplicate type definitions.
+- Import shared types from `@acme/shared`. Never duplicate type definitions.
 - All dates use `date-fns`. No `moment.js`, no raw Date manipulation.
 
 ### Backend
 - API responses use `{ data, error, meta }` envelope from `packages/shared/src/api.ts`.
 - Throw `AppError` from `apps/backend/src/errors.ts`, never raw `Error`.
 - Database access through repos in `apps/backend/src/repos/`. No direct Prisma in handlers.
-- New routes register in `apps/backend/src/routes/index.ts`.
 
 ### Frontend
-- Components in `apps/frontend/src/components/` use the `ComponentName/` directory pattern:
-  `ComponentName/index.tsx`, `ComponentName/ComponentName.test.tsx`, `ComponentName/styles.ts`.
-- State management: Zustand stores in `apps/frontend/src/stores/`. No prop drilling past 2 levels.
-- API calls go through hooks in `apps/frontend/src/hooks/api/`. No direct `fetch` in components.
-
-### Testing
-- Backend tests mock the database with `prismock`.
-- Frontend tests use `@testing-library/react`. No `enzyme`.
-- Each test file: at least one happy path + one error case.
+- Components use `ComponentName/` directory pattern: `index.tsx`, `ComponentName.test.tsx`.
+- State: Zustand stores in `apps/frontend/src/stores/`. No prop drilling past 2 levels.
+- API calls through hooks in `apps/frontend/src/hooks/api/`. No direct `fetch` in components.
 
 <important if="modifying database schema">
 Always create a migration: `pnpm --filter backend prisma migrate dev --name describe_change`.
-Never modify existing migrations. Create new ones.
+Never modify existing migrations. Migrations are forward-only.
 Run `pnpm --filter backend prisma generate` after schema changes.
 </important>
 
@@ -53,7 +63,7 @@ Run `pnpm --filter backend prisma generate` after schema changes.
 1. Define Zod schema in `apps/backend/src/schemas/`.
 2. Create handler in `apps/backend/src/handlers/`.
 3. Register route in `apps/backend/src/routes/index.ts`.
-4. Add corresponding API hook in `apps/frontend/src/hooks/api/`.
+4. Add API hook in `apps/frontend/src/hooks/api/`.
 </important>
 
 - **CRITICAL**: Never commit `.env` files. They contain production secrets.

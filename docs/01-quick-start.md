@@ -1,72 +1,60 @@
-# Quick Start: Your First CLAUDE.md in 5 Minutes
+# Quick Start: Your First Behavioral CLAUDE.md
 
-## What Is CLAUDE.md?
+Get a working CLAUDE.md in 5 minutes that makes Claude Code write better code.
 
-CLAUDE.md is a file you place in the root of your project that gives Claude Code persistent instructions. Think of it as a briefing document -- it tells Claude how your project works, what conventions to follow, and what mistakes to avoid.
+## The Minimum Viable CLAUDE.md
 
-Without it, Claude relies on general knowledge. With it, Claude works like a teammate who already knows your codebase.
-
-## Where Does It Go?
-
-Create a file called `CLAUDE.md` in your project root (the same directory as your `package.json`, `Cargo.toml`, or equivalent).
-
-```
-my-project/
-  CLAUDE.md    <-- here
-  src/
-  package.json
-```
-
-## The "5 Rules" Approach
-
-Don't write a novel. Start with **5 rules** based on the mistakes you correct most often. Here's the thought process:
-
-1. Think of the last 5 times you corrected Claude (or any AI assistant)
-2. Write one rule for each correction
-3. That's your CLAUDE.md
-
-## A Complete Example (~20 lines)
+Create a file called `CLAUDE.md` in your project root:
 
 ```markdown
-# Project: Acme API
+# Rules
 
-TypeScript + Express backend. PostgreSQL database via Prisma ORM.
-
-## Commands
-- Build: `pnpm build`
-- Test: `pnpm test` (runs vitest)
-- Lint: `pnpm lint` (runs eslint + prettier)
-
-## Rules
-- Use `pnpm`, not `npm` or `yarn`. The lockfile is pnpm-lock.yaml.
-- All API responses use the `{ data, error, meta }` envelope format defined in src/types/api.ts.
-- Database migrations go in prisma/migrations/. Never modify the database schema directly.
-- Error handling: throw AppError (from src/errors.ts), never raw Error.
-- Tests live next to source files as `*.test.ts`, not in a separate test/ directory.
+- If you are unsure whether a function, API, or library method exists, search the codebase or official docs first. Do not invent things.
+- Before modifying any file, read it first. Understand existing code before making changes.
+- Do not add features, refactors, or "improvements" beyond what was asked.
+- Run tests after making changes. Do not consider a task complete until tests pass.
+- If critical information is missing, ask me instead of guessing.
 ```
 
-That's it. 20 lines. This outperforms a 500-line CLAUDE.md because every line prevents a real mistake.
+That's it. Five rules, each addressing a real failure mode.
 
-## What NOT to Put in Your First Version
+## Why These Five Rules?
 
-- **Style guides** -- let your linter handle formatting (use Hooks for enforcement)
-- **Architecture documentation** -- that belongs in your README or docs/
-- **Generic guidelines** -- "write clean code" is meaningless; be specific
-- **Everything you know** -- add rules incrementally as problems surface
+Each rule targets a specific, documented problem:
 
-## The Question Test
+| Rule | Problem It Solves | Sources |
+|------|------------------|---------|
+| Don't invent things | Claude fabricates API methods, function signatures, library interfaces | Anthropic docs, LobeHub anti-hallucination skill, 20+ community reports |
+| Read before writing | Claude modifies code it hasn't read, causing bugs | Anthropic official best practice, Boris Cherny |
+| No unrequested changes | Claude over-engineers, adds features, refactors beyond scope | Builder.io, RanTheBuilder, AIMonks |
+| Run tests | Claude declares "fixed" without verification | Christopher Meiklejohn, Anthropic internal teams |
+| Ask don't guess | Claude silently makes wrong assumptions | HumanLayer, community consensus |
 
-Before adding any rule, ask: **"Would Claude make a mistake without this?"**
+## How It Works Internally
 
-- If Claude already does it correctly -> don't add it
-- If it's a style preference -> use a linter/formatter Hook instead
-- If it's a real, repeated mistake -> add it
+When Claude Code starts a session:
 
-## Generating a Starter
+1. System prompt loads (4,200 tokens, hidden, highest priority)
+2. Auto memory loads (~680 tokens)
+3. Environment info loads (~280 tokens)
+4. **Your CLAUDE.md loads (~320-1,800 tokens, delivered as a user message)**
+5. Your first prompt arrives
 
-You can also run `/init` in Claude Code to auto-generate a starter CLAUDE.md from your project. But then **delete half of what it generates** -- auto-generated files tend to be bloated.
+Your CLAUDE.md has **lower priority** than the built-in system prompt. This is why:
+- Vague rules get ignored (the system prompt's 4,200 tokens dominate)
+- Specific, concrete rules work (they add information the system prompt doesn't have)
+- Fewer rules = higher compliance (each rule gets more attention)
+
+## What To Do Next
+
+1. **Use it for a week.** Note every time Claude makes a mistake.
+2. **Add one rule per mistake.** Each correction becomes a permanent rule.
+3. **After a month, prune.** Delete any rule Claude hasn't violated in 30 days.
+
+This "start small, grow from pain" approach consistently produces better CLAUDE.md files than writing 50 rules upfront.
 
 ## Next Steps
 
-- [Hierarchy and Precedence](02-hierarchy-and-precedence.md) -- learn about user-level vs project-level CLAUDE.md
-- [Writing Effective Rules](04-writing-effective-rules.md) -- techniques for rules that Claude actually follows
+- [How Claude Code Works Internally](02-system-prompt-internals.md) — understand the 914-line prompt engine
+- [Anti-Hallucination Rules](04-anti-hallucination.md) — the most requested behavioral rules
+- [What Actually Works](07-what-works-and-what-doesnt.md) — community-tested rules with compliance rates
