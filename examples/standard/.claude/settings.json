@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(pnpm build)",
+      "Bash(pnpm test*)",
+      "Bash(pnpm lint)",
+      "Bash(pnpm tsc --noEmit)",
+      "Bash(pnpm dev)",
+      "Bash(git *)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(pnpm publish*)",
+      "Edit(*.env*)",
+      "Write(*.env*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "command": "npx prettier --write $CLAUDE_FILE_PATH 2>/dev/null || true"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE 'git\\s+(push|commit)' && git branch --show-current | grep -q '^main$'; then echo 'BLOCKED: No commits/pushes on main branch' >&2; exit 1; fi"
+      }
+    ]
+  }
+}

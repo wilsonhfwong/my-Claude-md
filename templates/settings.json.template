@@ -1,0 +1,37 @@
+{
+  "//": "Claude Code project settings. Copy to .claude/settings.json and customize.",
+
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash([BUILD COMMAND])",
+      "Bash([TEST COMMAND]*)",
+      "Bash([LINT COMMAND])",
+      "Bash(git *)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Edit(*.env*)",
+      "Write(*.env*)"
+    ]
+  },
+
+  "hooks": {
+    "PostToolUse": [
+      {
+        "//": "Auto-format after file edits. Adjust the formatter command for your project.",
+        "matcher": "Edit|Write",
+        "command": "[FORMATTER COMMAND] $CLAUDE_FILE_PATH 2>/dev/null || true"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "//": "Branch protection: block commits/pushes on main.",
+        "matcher": "Bash",
+        "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE 'git\\s+(push|commit)' && git branch --show-current | grep -q '^main$'; then echo 'BLOCKED: No commits/pushes on main branch' >&2; exit 1; fi"
+      }
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+# Project: [PROJECT NAME]
+
+[One-line description of tech stack and key tools.]
+
+## Commands
+- Build: `[build command]`
+- Test: `[test command]` ([test framework])
+- Test single: `[single test command]`
+- Lint: `[lint command]`
+- Dev: `[dev server command]`
+
+## Rules
+<!-- Start with 5 rules. Add one per week as problems surface. Prune monthly. -->
+<!-- Each rule should pass the Question Test: "Would Claude make a mistake without this?" -->
+
+- Use `[package manager]`, not [alternatives]. Lockfile: [lockfile name].
+- [Your most common correction #1.]
+- [Your most common correction #2.]
+- [Your most common correction #3.]
+- [Your most common correction #4.]
+
+<!-- Optional: conditional blocks for task-specific rules -->
+<!--
+<important if="[specific task context]">
+- [Task-specific rule 1.]
+- [Task-specific rule 2.]
+</important>
+-->
+
+<!-- Optional: critical rules (use sparingly, 2-3 max) -->
+<!-- - **CRITICAL**: [Non-negotiable rule, e.g., never commit secrets.] -->
+<!-- - **IMPORTANT**: [High-priority rule, e.g., always use feature branches.] -->
