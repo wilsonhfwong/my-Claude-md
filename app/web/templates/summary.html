@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ data.ticker }} {{ data.fiscal_year }} {{ data.fiscal_quarter }} &mdash; Summary</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2em auto; color: #222; }
+    h1 { margin-bottom: 0.2em; }
+    h2 { color: #555; margin-top: 0.2em; font-weight: normal; }
+    .summary { background: #f9f9f9; padding: 1.2em; border-radius: 6px; line-height: 1.55;
+               margin-top: 1.5em; }
+    .meta { color: #888; font-size: 0.85em; margin-top: 1em; }
+    .disclaimer { color: #888; font-size: 0.85em; margin-top: 2em; padding-top: 1em;
+                  border-top: 1px solid #eee; }
+    nav a { color: #555; margin-right: 1em; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/web/companies/{{ data.ticker }}/quarters/{{ data.fiscal_year }}/{{ data.fiscal_quarter }}">&laquo; Metrics</a>
+  </nav>
+  <h1>{{ data.ticker }} &mdash; {{ data.name }}</h1>
+  <h2>{{ data.fiscal_year }} {{ data.fiscal_quarter }} &middot; period ending {{ data.period_end }}</h2>
+  <div class="summary">{{ data.summary }}</div>
+  <p class="meta">
+    Prompt: <code>{{ data.prompt_id }}</code> &middot;
+    Model: <code>{{ data.model }}</code> &middot;
+    Tokens: {{ data.usage.input_tokens }} in / {{ data.usage.output_tokens }} out &middot;
+    {{ "cached" if data.cached else "fresh" }}
+  </p>
+  <p class="disclaimer">{{ data.disclaimer }}</p>
+</body>
+</html>

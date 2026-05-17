@@ -4,7 +4,7 @@ import uuid
 from datetime import UTC, datetime
 from decimal import Decimal
 
-from sqlalchemy import DateTime, ForeignKey, Integer, Numeric, String, UniqueConstraint
+from sqlalchemy import DateTime, ForeignKey, Integer, Numeric, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
@@ -44,6 +44,7 @@ class Quarter(Base):
     company: Mapped[Company] = relationship(back_populates="quarters")
     filings: Mapped[list[Filing]] = relationship(back_populates="quarter")
     metrics: Mapped[list[Metric]] = relationship(back_populates="quarter")
+    summaries: Mapped[list[Summary]] = relationship(back_populates="quarter")
 
 
 class Filing(Base):
@@ -71,3 +72,21 @@ class Metric(Base):
     source_filing_id: Mapped[str] = mapped_column(ForeignKey("filings.id"))
 
     quarter: Mapped[Quarter] = relationship(back_populates="metrics")
+
+
+class Summary(Base):
+    __tablename__ = "summaries"
+    __table_args__ = (UniqueConstraint("quarter_id", "prompt_id"),)
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    quarter_id: Mapped[str] = mapped_column(ForeignKey("quarters.id"))
+    prompt_id: Mapped[str] = mapped_column(String(64))
+    text: Mapped[str] = mapped_column(Text)
+    model: Mapped[str] = mapped_column(String(128))
+    request_id: Mapped[str] = mapped_column(String(128))
+    input_tokens: Mapped[int] = mapped_column(Integer)
+    output_tokens: Mapped[int] = mapped_column(Integer)
+    latency_ms: Mapped[int] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+    quarter: Mapped[Quarter] = relationship(back_populates="summaries")

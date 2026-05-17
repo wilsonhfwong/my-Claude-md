@@ -6,7 +6,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from app.api.companies import DbDep, EdgarDep, get_quarter
+from app.api.companies import DbDep, EdgarDep, LLMDep, get_quarter, get_quarter_summary
 
 _templates_dir = Path(__file__).parent / "templates"
 templates = Jinja2Templates(directory=str(_templates_dir))
@@ -37,3 +37,20 @@ def quarter_page(
 ) -> HTMLResponse:
     data = get_quarter(ticker=ticker, fy=fy, fq=fq, db=db, edgar=edgar)
     return templates.TemplateResponse(request=request, name="quarter.html", context={"data": data})
+
+
+@router.get(
+    "/web/companies/{ticker}/quarters/{fy}/{fq}/summary",
+    response_class=HTMLResponse,
+)
+def quarter_summary_page(
+    request: Request,
+    ticker: str,
+    fy: int,
+    fq: str,
+    db: DbDep,
+    edgar: EdgarDep,
+    llm: LLMDep,
+) -> HTMLResponse:
+    data = get_quarter_summary(ticker=ticker, fy=fy, fq=fq, db=db, edgar=edgar, llm=llm)
+    return templates.TemplateResponse(request=request, name="summary.html", context={"data": data})

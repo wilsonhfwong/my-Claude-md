@@ -3,14 +3,18 @@ from __future__ import annotations
 from collections.abc import Generator
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.db.models import Company, Filing, Metric, Quarter
+from app.db.models import Company, Filing, Metric, Quarter, Summary
 from app.db.session import SessionLocal
 from app.ingestion.edgar import EdgarClient, FixtureEdgarClient, facts_sha256
+from app.llm import LLMRouter
 from app.summarize.metrics import extract_metrics, period_end_from_metrics
+
+SUMMARIZE_PROMPT_NAME = "summarize_quarter"
+SUMMARIZE_PROMPT_VERSION = 1
 
 # Slice-scope ticker registry. A real implementation looks up CIKs from SEC's
 # company-tickers index or a seed table.
@@ -31,10 +35,15 @@ def get_edgar_client() -> EdgarClient:
     return FixtureEdgarClient()
 
 
+def get_llm_router(request: Request) -> LLMRouter:
+    return request.app.state.llm_router
+
+
 router = APIRouter(prefix="/companies", tags=["companies"])
 
 DbDep = Annotated[Session, Depends(get_db)]
 EdgarDep = Annotated[EdgarClient, Depends(get_edgar_client)]
+LLMDep = Annotated[LLMRouter, Depends(get_llm_router)]
 
 
 @router.get("/{ticker}/quarters/{fy}/{fq}")
@@ -123,5 +132,69 @@ def get_quarter(
             }
             for m in quarter.metrics
         ],
+        "disclaimer": "Informational only, not investment advice.",
+    }
+
+
+@router.get("/{ticker}/quarters/{fy}/{fq}/summary")
+def get_quarter_summary(
+    ticker: str,
+    fy: int,
+    fq: str,
+    db: DbDep,
+    edgar: EdgarDep,
+    llm: LLMDep,
+) -> dict:
+    quarter_data = get_quarter(ticker=ticker, fy=fy, fq=fq, db=db, edgar=edgar)
+
+    quarter = db.scalar(
+        select(Quarter)
+        .join(Company, Quarter.company_id == Company.id)
+        .where(
+            Company.ticker == quarter_data["ticker"],
+            Quarter.fiscal_year == quarter_data["fiscal_year"],
+            Quarter.fiscal_quarter == int(quarter_data["fiscal_quarter"][1:]),
+        )
+    )
+
+    prompt_id = f"{SUMMARIZE_PROMPT_NAME}:v{SUMMARIZE_PROMPT_VERSION}"
+    summary = db.scalar(
+        select(Summary).where(
+            Summary.quarter_id == quarter.id,
+            Summary.prompt_id == prompt_id,
+        )
+    )
+    cached = summary is not None
+    if summary is None:
+        result = llm.run(SUMMARIZE_PROMPT_NAME, SUMMARIZE_PROMPT_VERSION, quarter_data)
+        summary = Summary(
+            quarter_id=quarter.id,
+            prompt_id=prompt_id,
+            text=result.text,
+            model=result.model,
+            request_id=result.request_id,
+            input_tokens=result.usage.input_tokens,
+            output_tokens=result.usage.output_tokens,
+            latency_ms=result.latency_ms,
+        )
+        db.add(summary)
+        db.commit()
+        db.refresh(summary)
+
+    return {
+        "ticker": quarter_data["ticker"],
+        "name": quarter_data["name"],
+        "fiscal_year": quarter_data["fiscal_year"],
+        "fiscal_quarter": quarter_data["fiscal_quarter"],
+        "period_end": quarter_data["period_end"],
+        "prompt_id": summary.prompt_id,
+        "model": summary.model,
+        "summary": summary.text,
+        "usage": {
+            "input_tokens": summary.input_tokens,
+            "output_tokens": summary.output_tokens,
+            "latency_ms": summary.latency_ms,
+        },
+        "cached": cached,
         "disclaimer": "Informational only, not investment advice.",
     }
