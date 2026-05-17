@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ data.ticker }} {{ data.fiscal_year }} {{ data.fiscal_quarter }}</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2em auto; color: #222; }
+    h1 { margin-bottom: 0.2em; }
+    h2 { color: #555; margin-top: 0.2em; font-weight: normal; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1.5em; }
+    th, td { text-align: left; padding: 0.5em 0.8em; border-bottom: 1px solid #ddd; }
+    th { background: #f6f6f6; }
+    .disclaimer { color: #888; font-size: 0.85em; margin-top: 2em; padding-top: 1em;
+                  border-top: 1px solid #eee; }
+  </style>
+</head>
+<body>
+  <h1>{{ data.ticker }} &mdash; {{ data.name }}</h1>
+  <h2>{{ data.fiscal_year }} {{ data.fiscal_quarter }} &middot; period ending {{ data.period_end }}</h2>
+  {% if data.metrics %}
+  <table>
+    <thead><tr><th>Metric</th><th>Value</th><th>Unit</th></tr></thead>
+    <tbody>
+      {% for m in data.metrics %}
+      <tr>
+        <td>{{ m.name }}</td>
+        <td>{{ m.value }}</td>
+        <td>{{ m.unit }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No metrics available for this period.</p>
+  {% endif %}
+  <p class="disclaimer">{{ data.disclaimer }}</p>
+</body>
+</html>

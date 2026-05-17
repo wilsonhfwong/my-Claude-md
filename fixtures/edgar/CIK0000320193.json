@@ -1,0 +1,62 @@
+{
+  "cik": 320193,
+  "entityName": "Apple Inc.",
+  "facts": {
+    "us-gaap": {
+      "EarningsPerShareDiluted": {
+        "label": "Earnings Per Share, Diluted",
+        "units": {
+          "USD/shares": [
+            {
+              "start": "2024-12-29",
+              "end": "2025-03-29",
+              "val": 1.65,
+              "accn": "0000320193-25-000057",
+              "fy": 2025,
+              "fp": "Q2",
+              "form": "10-Q",
+              "filed": "2025-05-02"
+            },
+            {
+              "start": "2024-09-29",
+              "end": "2024-12-28",
+              "val": 2.40,
+              "accn": "0000320193-25-000008",
+              "fy": 2025,
+              "fp": "Q1",
+              "form": "10-Q",
+              "filed": "2025-01-31"
+            }
+          ]
+        }
+      },
+      "RevenueFromContractWithCustomerExcludingAssessedTax": {
+        "label": "Revenue From Contract With Customer Excluding Assessed Tax",
+        "units": {
+          "USD": [
+            {
+              "start": "2024-12-29",
+              "end": "2025-03-29",
+              "val": 95359000000,
+              "accn": "0000320193-25-000057",
+              "fy": 2025,
+              "fp": "Q2",
+              "form": "10-Q",
+              "filed": "2025-05-02"
+            },
+            {
+              "start": "2024-09-29",
+              "end": "2024-12-28",
+              "val": 124300000000,
+              "accn": "0000320193-25-000008",
+              "fy": 2025,
+              "fp": "Q1",
+              "form": "10-Q",
+              "filed": "2025-01-31"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
