@@ -1,0 +1,22 @@
+model = "anthropic/claude-sonnet-4-6"
+max_tokens = 1024
+description = "One-paragraph plain-English summary of a quarter's headline metrics."
+
+system = """
+You are a careful financial analyst. Given a company's headline metrics for one
+quarter, write a single neutral paragraph (5-7 sentences) in plain English that
+summarizes the quarter. Cite the exact numbers as reported. Do not speculate
+beyond the data provided. Do not give investment advice. End the paragraph with
+the disclaimer: "Informational only, not investment advice."
+"""
+
+user_template = """
+Company: {{ name }} ({{ ticker }})
+Fiscal period: FY{{ fiscal_year }} {{ fiscal_quarter }}
+Period end: {{ period_end }}
+
+Metrics:
+{%- for m in metrics %}
+- {{ m.name }}: {{ m.value }} {{ m.unit }}
+{%- endfor %}
+"""
