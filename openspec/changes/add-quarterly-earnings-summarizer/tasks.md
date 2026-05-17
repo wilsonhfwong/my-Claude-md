@@ -1,13 +1,13 @@
 # Tasks
 
 ## 1. Project scaffolding
-- [ ] 1.1 Create `pyproject.toml` with Python 3.12, FastAPI, SQLAlchemy 2.0,
+- [x] 1.1 Create `pyproject.toml` with Python 3.12, FastAPI, SQLAlchemy 2.0,
       Alembic, ARQ, LiteLLM, PyMuPDF, edgartools, faster-whisper, pytest, ruff.
-- [ ] 1.2 Create directory tree `/app`, `/prompts`, `/golden`, `/eval`, `/agent`,
+- [x] 1.2 Create directory tree `/app`, `/prompts`, `/golden`, `/eval`, `/agent`,
       `/tests`, `/data` (gitignored).
-- [ ] 1.3 Add `Makefile` targets: `dev`, `worker`, `eval`, `agent`, `test`, `lint`.
-- [ ] 1.4 Add `docker-compose.yml` with Redis and (optional) Postgres services.
-- [ ] 1.5 Configure `pydantic-settings` for `.env`; secret-redaction logging filter.
+- [x] 1.3 Add `Makefile` targets: `dev`, `worker`, `eval`, `agent`, `test`, `lint`.
+- [x] 1.4 Add `docker-compose.yml` with Redis and (optional) Postgres services.
+- [x] 1.5 Configure `pydantic-settings` for `.env`; secret-redaction logging filter.
 
 ## 2. Storage (capability: storage)
 - [ ] 2.1 SQLAlchemy 2.0 models for: companies, quarters, filings, transcripts,

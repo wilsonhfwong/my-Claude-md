@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "earnings-summarizer"
+version = "0.1.0"
+description = "Quarterly earnings summarizer for US-listed companies"
+requires-python = ">=3.12"
+readme = "README.md"
+dependencies = [
+    "fastapi[standard]>=0.115",
+    "uvicorn[standard]>=0.30",
+    "jinja2>=3.1",
+    "sqlalchemy>=2.0",
+    "alembic>=1.13",
+    "arq>=0.26",
+    "redis>=5.0",
+    "litellm>=1.50",
+    "pymupdf>=1.24",
+    "edgartools>=2.5",
+    "faster-whisper>=1.0",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.4",
+    "httpx>=0.27",
+    "pyyaml>=6.0",
+    "jsonschema>=4.23",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["app", "eval", "agent"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "W", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
